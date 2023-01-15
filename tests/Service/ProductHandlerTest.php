@@ -55,14 +55,49 @@ class ProductHandlerTest extends TestCase
         ],
     ];
 
+    /**
+     * 测试计算商品总金额
+     * @author lvli
+     */
     public function testGetTotalPrice()
     {
-        $totalPrice = 0;
-        foreach ($this->products as $product) {
-            $price = $product['price'] ?: 0;
-            $totalPrice += $price;
-        }
-
+        $totalPrice = ProductHandler::getTotalPrice($this->products);
         $this->assertEquals(143, $totalPrice);
+    }
+
+    /**
+     * 测试筛选商品
+     * @author lvli
+     */
+    public function testSearch()
+    {
+        $products = ProductHandler::search($this->products, 'Dessert', 'price', SORT_DESC);
+        $this->assertEquals([
+            [
+                'id' => 5,
+                'name' => 'New York Cheese Cake',
+                'type' => 'Dessert',
+                'price' => 40,
+                'create_at' => '2021-04-19 14:38:00',
+            ],
+            [
+                'id' => 4,
+                'name' => 'Cup cake',
+                'type' => 'Dessert',
+                'price' => 35,
+                'create_at' => '2021-04-18 08:45:00',
+            ],
+        ], $products);
+    }
+
+    /**
+     * 测试日期转换为时间戳
+     * @author lvli
+     */
+    public function testChangeDateToTimestamp()
+    {
+        $date = '2022-12-31 09:00:00';
+        $timeStamp = ProductHandler::dateToTimestamp($date);
+        $this->assertEquals(1672477200, $timeStamp);
     }
 }

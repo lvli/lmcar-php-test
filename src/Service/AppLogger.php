@@ -6,27 +6,26 @@ class AppLogger
 {
     const TYPE_LOG4PHP = 'log4php';
 
-    private $logger;
+    private $loggerProxy;
 
     public function __construct($type = self::TYPE_LOG4PHP)
     {
-        if ($type == self::TYPE_LOG4PHP) {
-            $this->logger = \Logger::getLogger("Log");
-        }
+        // 使用代理模式访问不同的日志对象
+        $this->loggerProxy = new LoggerProxy($type);
     }
 
     public function info($message = '')
     {
-        $this->logger->info($message);
+        $this->loggerProxy->write(__FUNCTION__, $message);
     }
 
     public function debug($message = '')
     {
-        $this->logger->debug($message);
+        $this->loggerProxy->write(__FUNCTION__, $message);
     }
 
     public function error($message = '')
     {
-        $this->logger->error($message);
+        $this->loggerProxy->write(__FUNCTION__, $message);
     }
 }
